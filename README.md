@@ -11,9 +11,6 @@
 
 On **conçoit** avec un outil de design, on **challenge** avec un LLM conversationnel, on **construit** avec un agent de code en terminal, et l'humain **décide**.
 
-## Pourquoi « D2B » et plus « ADD »
-
-ADD mettait l'accent sur l'agent. En pratique, la qualité ne vient pas de l'autonomie de l'agent, mais du **flow** entre trois outils et des **réflexes** de la personne qui pilote. D2B nomme ce qui produit vraiment le résultat : passer du design au build, sans perte d'intention, avec un regard critique à chaque étape.
 
 ---
 

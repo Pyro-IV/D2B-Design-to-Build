@@ -89,6 +89,7 @@ docs/
 | Maquette jointe au chat, jamais versionnée | Référence perdue après la session | Maquette dans `docs/design/` |
 | Accepter le rapport de l'agent sans relecture | Écarts silencieux en production | Revue par le Challenger |
 | Optimiser un score de labo au détriment du produit | Identité sacrifiée pour un chiffre simulé | Mesurer sur les vrais utilisateurs avant d'arbitrer |
+| Dater une migration à la main | Migration antérieure au dernier état appliqué, que l'outil refuse d'insérer | Horodatage réel à la création, renumérotation avant le push, jamais de `--include-all` |
 
 ---
 

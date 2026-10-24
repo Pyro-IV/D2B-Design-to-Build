@@ -1,138 +1,160 @@
 # D2B : Design to Build
 
-> Méthode de développement produit assistée par IA. Une personne seule, ou une très petite équipe, conçoit et livre un produit de qualité production en orchestrant trois rôles IA complémentaires.
+A product development method for teams that build with AI agents.
 
-**Version :** 2.0 (octobre 2026), anciennement ADD (Agent-Driven Development)
-**Auteur :** Pierre Verfaillie · [pvfl.fr](https://pvfl.fr)
+Four roles, one cycle, and one rule that holds the rest together: **the human
+decides what cannot be undone.**
 
----
+```mermaid
+flowchart LR
+    subgraph CYCLE[" "]
+        direction LR
+        F[Frame] --> D[Design] --> P[Plan] --> B[Build] --> V[Verify] --> R[Review] --> L[Log]
+        L -.-> F
+    end
 
-## En une phrase
+    DESIGN[["Design<br/>screens before code"]] --> D
+    CHALLENGE[["Challenge<br/>questions before work"]] --> F
+    CHALLENGE --> R
+    BUILD[["Build<br/>code, tests, docs"]] --> B
+    DECIDE[["Decide<br/>human, always"]] --> P
+    DECIDE --> V
+    DECIDE --> L
 
-On **conçoit** avec un outil de design, on **challenge** avec un LLM conversationnel, on **construit** avec un agent de code en terminal, et l'humain **décide**.
-
-
----
-
-## 1. Les quatre rôles
-
-| Rôle | Outil de référence | Responsabilité | Ne fait pas |
-|---|---|---|---|
-| **Concevoir** | Claude Design | Maquettes desktop et mobile, design system (tokens, typo, couleurs), états (vide, erreur, chargement), écrans admin | N'écrit pas le code de production |
-| **Challenger** | LLM conversationnel (Claude, dans un projet dédié) | Cadrage, arbitrages, revue des plans et des rapports de l'agent, rédaction des consignes, vérification des faits, garde-fous sécurité et légaux | Ne code pas, ne décide pas à la place de l'humain |
-| **Construire** | Claude Code (CLI) | Scaffold, code, migrations, tests, build, déploiement, documentation | Ne tranche pas seul les arbitrages de marque, légaux ou chiffrés : il les remonte |
-| **Décider** | L'humain (product owner) | Vision, validation des plans, arbitrages, actions irréversibles, secrets | Ne colle jamais un secret dans une conversation |
-
-Les outils sont interchangeables. Les **rôles**, eux, ne le sont pas : c'est leur séparation qui fait la qualité.
-
----
-
-## 2. Le flow
-
-```
- Cadrer ──► Concevoir ──► Planifier ──► Construire ──► Vérifier ──► Revoir ──► Consigner
- (Challenger) (Design)     (Build + OK     (Build, par    (Build)      (Challenger  (Build)
-                            humain)         lot)                        + humain)
-                                 ▲                                          │
-                                 └────────────── lot suivant ◄──────────────┘
+    style DECIDE fill:#ff704d,stroke:#16202c,color:#16202c
+    style CYCLE fill:#f7f5f1,stroke:#c9c3b8
 ```
 
-| Étape | Entrée | Sortie |
+The three outer roles produce. The fourth decides. The cycle turns until the
+work is done, and every turn ends in something that runs.
+
+---
+
+## Who this is for
+
+**Project leads and product managers** who now ship with agents and need a way
+to keep control of scope, quality and risk. You do not need to write code to
+use this method. Most of it is about what you ask for, what you look at, and
+what you refuse.
+
+**Builders** who work with agents daily and want the parts that are easy to get
+wrong written down: how to specify, how to keep context affordable, how to
+make data changes safe, and which failures look like success.
+
+If you only read one thing, read
+[the six principles](docs/00-principles.md). They take two minutes.
+
+---
+
+## The four roles
+
+| Role | Produces | Never does |
 |---|---|---|
-| **0. Cadrer** | Une idée, un besoin | Brief, stack, règles non négociables, `CLAUDE.md` initial |
-| **1. Concevoir** | Brief | Maquette exportée dans `docs/design/` |
-| **2. Planifier** | `CLAUDE.md` + maquette | Plan du lot (arborescence, composants, décisions), **validé avant tout code** |
-| **3. Construire** | Plan validé | Code du lot, poussé sur une branche ou sur `main` |
-| **4. Vérifier** | Code | Build, lint, typage, tests, Lighthouse, HTML servi, console propre |
-| **5. Revoir** | Rapport de fin de lot | Liste d'arbitrages tranchés par l'humain, avec l'aide du Challenger |
-| **6. Consigner** | Arbitrages | `docs/sessions/AAAA-MM-JJ.md`, `docs/decisions.md`, README et `CLAUDE.md` mis à jour |
+| **Design** | Screens, flows, a design system | Decide scope or priority |
+| **Challenge** | Questions, counter-proposals, reviews | Produce the deliverable |
+| **Build** | Code, tests, documentation, migrations | Choose what to build |
+| **Decide** | Arbitration, acceptance, release | Delegate what is irreversible |
+
+Roles are not tools and not people. One person can hold several. An agent can
+hold Build and part of Design. **Decide stays human, without exception.**
+
+Read more: [roles and their boundaries](docs/01-roles.md).
 
 ---
 
-## 3. Artefacts du repo
+## The cycle
 
-```
-CLAUDE.md               Source de vérité : mission, stack, règles, arborescence, conventions
-_inbox/                 Dépôt brut de l'humain (images, exports). L'agent range puis vide. Ignoré par git
-docs/
-  design/               Maquettes et exports de design (référence visuelle versionnée)
-  decisions.md          Journal des décisions : quoi, pourquoi, alternatives écartées
-  sessions/             Une synthèse par session : fait, écarts, à trancher, prochaine étape
-.env.example            Noms des variables, jamais les valeurs
-```
+Seven steps. Each one ends in something you can point at.
 
-**Règle d'or :** si une décision n'est pas écrite dans le repo, elle n'existe pas pour la session suivante.
+| Step | Ends in |
+|---|---|
+| **Frame** | A written problem, with what is explicitly out of scope |
+| **Design** | Screens that a committee can read |
+| **Plan** | A batch specification with acceptance criteria |
+| **Build** | Code that runs, with its tests |
+| **Verify** | Evidence: what was run, what was measured |
+| **Review** | A decision: accept, adjust, or reject |
+| **Log** | A written record of why |
 
----
+Small batches. A batch that cannot end in something running is too big.
 
-## 4. Les réflexes
-
-1. **Plan avant code.** Corriger un plan coûte 30 secondes, corriger du code coûte une session.
-2. **Lot livré à 100 %.** Pas de demi-fonctionnalité en production : un lot est fini, testé et documenté, ou il n'est pas livré.
-3. **L'agent remonte, l'humain tranche.** Tout écart avec la maquette ou le plan, tout choix de marque, tout chiffre affiché, toute mention légale est signalé, jamais décidé en silence.
-4. **Le Challenger relit chaque rapport.** Un second regard qui n'a pas écrit le code repère les angles morts : duplication de contenu, performance, sécurité, conformité.
-5. **Vérifier plutôt que deviner.** Une adresse légale, un prix ou une version de dépendance se sourcent ; ils ne s'inventent pas.
-6. **Sécurité par défaut fermé.** Accès refusé tant qu'il n'est pas explicitement accordé (RLS, grants, inscriptions fermées). Le middleware n'est jamais la seule barrière.
-7. **Les secrets restent hors des conversations** et de l'historique du terminal ; ils vont directement dans les fichiers d'environnement ou le gestionnaire de secrets.
-8. **Une seule source de vérité.** Un prix, un texte ou un lien est défini à un seul endroit et lu partout ailleurs.
-9. **Actions irréversibles = humain.** DNS, suppression de données, publication, paiement : l'agent prépare, l'humain exécute ou confirme.
+Read more: [the cycle, and its fast lane](docs/02-cycle.md).
 
 ---
 
-## 5. Anti-patterns
+## What this method does not do
 
-| Anti-pattern | Conséquence | Correctif D2B |
-|---|---|---|
-| Coder directement depuis une idée | Architecture improvisée, refonte au lot 2 | Cadrer, concevoir, planifier |
-| Lancer l'agent sans `CLAUDE.md` | Chaque session repart de zéro | `CLAUDE.md` avant la première ligne de code |
-| Laisser l'agent arbitrer seul | Choix de marque ou légaux faits par défaut | Section « à trancher » obligatoire dans chaque rapport |
-| Maquette jointe au chat, jamais versionnée | Référence perdue après la session | Maquette dans `docs/design/` |
-| Accepter le rapport de l'agent sans relecture | Écarts silencieux en production | Revue par le Challenger |
-| Optimiser un score de labo au détriment du produit | Identité sacrifiée pour un chiffre simulé | Mesurer sur les vrais utilisateurs avant d'arbitrer |
+It does not replace specialist review. Accessibility, security and legal
+checks are still performed by people who do that work.
 
----
+It does not make estimates reliable. It makes them smaller, and therefore
+wrong by less.
 
-## 6. Modèles de consignes
+It does not remove the need for product skill. An agent that is asked the
+wrong question answers it very well.
 
-**Lancement d'un lot (à l'agent)**
-```
-Lis CLAUDE.md et docs/design/.
-Lot N : [périmètre]. Hors périmètre : [liste].
-Avant de coder, présente ton plan (arborescence, composants, décisions) et attends ma validation.
-En fin de lot : build, lint et typage verts, vérifications [liste], synthèse dans docs/sessions/,
-et une section « À trancher » pour chaque écart ou choix que tu n'as pas pu faire seul.
-```
-
-**Revue d'un rapport (au Challenger)**
-```
-Voici le rapport de fin de lot de l'agent. Évalue le plan et les écarts :
-ce qui est solide, ce qui est risqué (SEO, perf, sécurité, légal, cohérence de marque),
-ce que je dois trancher. Rédige ensuite la réponse à transmettre à l'agent.
-```
-
-**Retour d'arbitrage (à l'agent)**
-```
-Arbitrages : 1. [...] 2. [...]
-Règles à ajouter à CLAUDE.md : [...]
-Ensuite : [lot ou étape suivante].
-```
+It does not apply to everything. See
+[when not to adopt it](docs/09-adopting.md#when-not-to-adopt-it).
 
 ---
 
-## 7. Quand l'utiliser, et ses limites
+## Start here
 
-**Adapté à :** sites et applications web ou mobiles, MVP, outils internes, prototypes à faire passer en production, portage d'un design vers du code.
+Three files, in the order that pays off fastest:
 
-**Limites :**
-- La méthode accélère la production ; elle ne remplace ni un audit de sécurité, ni une validation UX avec de vrais utilisateurs, ni un avis juridique.
-- La qualité dépend des réflexes de la personne qui pilote : l'outillage seul ne suffit pas.
-- Pour un produit qui exige plusieurs expertises pointues en parallèle, D2B se combine avec des experts humains ; il ne les remplace pas.
+1. **[templates/agent-instructions.md](templates/agent-instructions.md)** ,
+   the constraints your agent must never break. Fill this first. Half the
+   failures in [the anti-pattern catalogue](docs/08-anti-patterns.md) are
+   prevented by this one file.
+2. **[templates/batch-spec.md](templates/batch-spec.md)**, one batch, with
+   what is out of scope and how you will know it is done.
+3. **[templates/decision-log.md](templates/decision-log.md)**, so the next
+   session can resume instead of re-deciding.
+
+A complete worked example is in
+[examples/worked-example.md](examples/worked-example.md).
 
 ---
 
-## Historique
+## Documentation
 
-| Version | Date | Changement |
-|---|---|---|
-| 1.x | 2025-2026 | ADD (Agent-Driven Development) : workflow à deux Claude, stratégie et exécution |
-| 2.0 | Octobre 2026 | Renommée D2B (Design to Build) : ajout du rôle Concevoir, formalisation du flow, des artefacts et des réflexes |
+| Document | What it covers |
+|---|---|
+| [00. Principles](docs/00-principles.md) | Six rules, short enough to remember |
+| [01. Roles](docs/01-roles.md) | What each role produces, and the boundaries |
+| [02. The cycle](docs/02-cycle.md) | Seven steps, and when you may shorten them |
+| [03. Human decisions](docs/03-human-decisions.md) | The six moments that stop the cycle |
+| [04. Design](docs/04-design.md) | The screen as specification, the design system as contract |
+| [05. Specs and context](docs/05-specs-and-context.md) | Writing a spec an agent follows, and what context costs |
+| [06. Batch lifecycle](docs/06-batch-lifecycle.md) | From specification to merge |
+| [07. Data safety](docs/07-data-safety.md) | Changing production data without losing any |
+| [08. Anti-patterns](docs/08-anti-patterns.md) | Sixteen failures that look like success |
+| [09. Adopting](docs/09-adopting.md) | Where to start, and when not to |
+| [10. Positioning](docs/10-positioning.md) | Next to fast prototyping and heavy specification |
+| [11. Glossary](docs/11-glossary.md) | Shared vocabulary |
+
+---
+
+## Anti-patterns
+
+The catalogue is the most useful part of this repository for teams already
+building with agents. Sixteen failures, in five families, each one observed
+and each one written the same way: **the symptom**, **why review misses it**,
+**what catches it**, **the rule**.
+
+Every family opens with *what it costs the project*, in plain language, before
+the technical detail.
+
+→ [docs/08-anti-patterns.md](docs/08-anti-patterns.md)
+
+---
+
+## Contributing
+
+What is most useful to receive: a failure you hit, written as the catalogue
+writes them. A method is worth what its failure list is worth.
+
+## License
+
+[Creative Commons Attribution 4.0 International](LICENSE). Use it, adapt it,
+sell work based on it. Keep the attribution.

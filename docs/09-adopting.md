@@ -15,7 +15,7 @@ on process and go back to what they were doing.
 flowchart LR
     W1["Week 1<br/>Instruction file<br/><br/>Constraints the agent<br/>must never break"]
     W2["Week 2<br/>Batch specification<br/><br/>One batch, with<br/>what is out of scope"]
-    W3["Week 3<br/>Decision log<br/><br/>So the next session<br/>can resume"]
+    W3["Week 3<br/>Decision log<br/><br/>So anyone can pick up<br/>the work"]
     REST["Later<br/>The rest, if it earns<br/>its place"]
 
     W1 --> W2 --> W3 --> REST

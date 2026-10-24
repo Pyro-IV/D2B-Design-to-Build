@@ -1,15 +1,17 @@
 # A decision log, filled in
 
-Five entries from a real project, rewritten so that nothing identifies the
-product, the client or the organisation. They are kept because each one
-records a decision that was later questioned, which is exactly what a
-decision log is for.
+Five entries, in the form a decision log takes. The situations are ordinary
+ones: each records a decision that was later questioned, which is exactly what
+a decision log is for.
+
+The dates are illustrative. Nothing here names a product, an organisation or a
+person, and nothing is meant to.
 
 Newest first.
 
 ---
 
-## 2026-05-02: Content is edited in production, not in a preview
+## 2026-05-14: Content is edited in production, not in a preview
 
 **What was decided.** Content changes are made in the production
 administration interface. Preview environments show a visible banner saying
@@ -30,7 +32,7 @@ editing there would be safe, and the banner should say something different.
 
 ---
 
-## 2026-04-18: One cache label per source of data, applied at the read
+## 2026-04-02: One cache label per source of data, applied at the read
 
 **What was decided.** Each source of data carries one label, and that label is
 its name. Pages and routes declare nothing.
@@ -52,7 +54,7 @@ be preferred.
 
 ---
 
-## 2026-03-27: Two dependency versions pinned exactly
+## 2026-03-06: Two dependency versions pinned exactly
 
 **What was decided.** Two packages are declared at an exact version rather
 than a range, unlike the rest.
@@ -65,7 +67,7 @@ with those two versions pinned" produced both a complete lock file and no
 version drift.
 
 **What was rejected, and why.** Accepting the drift. Both packages were
-unrelated to the batch, and one of them renders every icon in the product.
+unrelated to the batch, and one of them was used throughout the interface.
 Also rejected: repairing the lock file afterwards, which produced a lock file
 missing all platform binaries, a deployment failure that does not reproduce
 locally.
@@ -75,13 +77,13 @@ pins and do a clean install in that batch, deliberately.
 
 ---
 
-## 2026-02-11: The administration pages are rendered in the tests
+## 2026-02-19: The administration pages are rendered in the tests
 
 **What was decided.** A test signs in and loads every page behind
 authentication, failing on any console error, any failed request, or any
 near-empty page.
 
-**Why.** Two hundred and ten tests passed over a change that made two
+**Why.** The whole unit test suite passed over a change that made several
 administration pages return an error. None of them rendered a page behind
 authentication, so none of them crossed the boundary where the fault was.
 
@@ -90,12 +92,12 @@ broke. The fault was not in the component: it was in what was passed across a
 boundary, which no unit test observes.
 
 **What would change this.** Nothing foreseeable. The negative control was run:
-reintroducing the fault fails this test on six pages while the unit tests
-stay green.
+reintroducing the fault fails this test on every affected page while the unit
+tests stay green.
 
 ---
 
-## 2026-01-09: Data guards are written against stored values
+## 2026-01-22: Data guards are written against stored values
 
 **What was decided.** A guard on a data correction matches the exact value it
 expects to replace, taken from a dump of the real data.

@@ -113,6 +113,23 @@ one.
 
 ## Privileged functions
 
+### What it costs the project
+
+This is the only part of this document whose failure has no symptom at all.
+A door is left open, nothing behaves differently, and you find out when
+somebody walks through it, or never.
+
+The other rules here protect you from losing data. This one protects you from
+someone else reaching it. It is three lines of configuration, and it is the
+thing most often shipped without them, because the code that is visible, the
+authorisation check, is written and correct.
+
+If you take one thing from this section: **creating a privileged function is
+two steps, not one.** Writing the check, and revoking the permission the
+database granted by default.
+
+### The three requirements
+
 A function that runs with elevated privileges in order to perform a data
 operation needs three things, and the third is the one that gets forgotten:
 

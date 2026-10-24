@@ -32,8 +32,8 @@ from, it does not ship.
 a person.
 
 **Decision log.** The project's memory of *why*. Why this approach and not
-the obvious one; what was tried and abandoned. It is what lets the next
-session resume instead of re-deciding.
+the obvious one; what was tried and abandoned. It is what lets anyone pick up
+the work instead of re-deciding it.
 
 **Design system.** The set of decisions made once, spacing, type, colour
 roles, component shapes, states, so that no screen has to negotiate them

@@ -1,7 +1,8 @@
 # A worked example
 
-One batch, from the request to the merge. The product is a fictional
-scheduling tool; the shape of the work is real.
+One batch, from the request to the merge. The product is invented: a booking
+tool with time slots, chosen because everyone has used one. Only the shape of
+the work is drawn from practice.
 
 Read this if the templates feel abstract.
 

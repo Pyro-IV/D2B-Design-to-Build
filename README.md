@@ -108,8 +108,8 @@ Three files, in the order that pays off fastest:
    prevented by this one file.
 2. **[templates/batch-spec.md](templates/batch-spec.md)**, one batch, with
    what is out of scope and how you will know it is done.
-3. **[templates/decision-log.md](templates/decision-log.md)**, so the next
-   session can resume instead of re-deciding.
+3. **[templates/decision-log.md](templates/decision-log.md)**, so anyone can
+   pick up the work instead of re-deciding it.
 
 A complete worked example is in
 [examples/worked-example.md](examples/worked-example.md).
